@@ -1,12 +1,12 @@
 package sum
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
 
 	"github.com/efficientgo/core/errcapture"
-	"github.com/efficientgo/core/testutil"
 	"github.com/efficientgo/examples/pkg/sum/sumtestutil"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
@@ -24,25 +24,21 @@ export ver=v1 && \
     | tee ${ver}.txt
 */
 func BenchmarkSum(b *testing.B) {
-	benchmarkSum(testutil.NewTB(b))
+	fn := lazyCreateTestInput(b, 2e6)
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_, err := Sum(fn)
+		assert.NoError(b, err)
+	}
 }
 func TestBenchSum(t *testing.T) {
-	benchmarkSum(testutil.NewTB(t))
-}
-
-func benchmarkSum(tb testutil.TB) {
-	fn := filepath.Join(tb.TempDir(), "/test.2M.txt")
+	fn := filepath.Join(t.TempDir(), "/test.2M.txt")
 	sum, err := createTestInput(fn, 2e6)
-	assert.NoError(tb, err)
-
-	tb.ResetTimer()
-	for i := 0; i < tb.N(); i++ {
-		ret, err := Sum(fn)
-		assert.NoError(tb, err)
-		if !tb.IsBenchmark() {
-			assert.Equal(tb, sum, ret)
-		}
-	}
+	assert.NoError(t, err)
+	ret, err := Sum(fn)
+	assert.NoError(t, err)
+	assert.Equal(t, sum, ret)
 }
 
 func createTestInput(fn string, numLen int) (sum int64, err error) {
@@ -62,4 +58,19 @@ func createTestInputWithExpectedResult(fn string, numLen int) (sum int64, err er
 	defer errcapture.Do(&err, f.Close, "close file")
 
 	return sumtestutil.CreateTestInputWithExpectedResult(f, numLen)
+}
+
+func lazyCreateTestInput(tb testing.TB, numLines int) (filename string) {
+	tb.Helper()
+
+	filename = fmt.Sprintf("testdata/test.%v.txt", numLines)
+	_, err := os.Stat(filename)
+	if errors.Is(err, os.ErrNotExist) {
+		_, err = createTestInput(filename, numLines)
+		assert.NoError(tb, err)
+	} else {
+		assert.NoError(tb, err)
+	}
+
+	return filename
 }
