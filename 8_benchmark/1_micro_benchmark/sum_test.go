@@ -2,7 +2,15 @@ package sum
 
 import (
 	"testing"
+
+	"github.com/efficientgo/core/testutil"
 )
+
+func TestSum(t *testing.T) {
+	ret, err := Sum("testdata/input.txt")
+	testutil.Ok(t, err)
+	testutil.Equals(t, 3110800, ret)
+}
 
 func BenchmarkSum(b *testing.B) {
 	b.ReportAllocs()
