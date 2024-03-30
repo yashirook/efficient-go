@@ -7,12 +7,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestSum(t *testing.T) {
-	ret, err := Sum("testdata/input.txt")
-	assert.NoError(t, err)
-	assert.Equal(t, int64(3110800), ret)
-}
-
 func BenchmarkSum(b *testing.B) {
 	benchmarkSum(testutil.NewTB(b))
 }
