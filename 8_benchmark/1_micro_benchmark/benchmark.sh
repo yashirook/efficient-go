@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-OUTPUT_DIR=benchmark_outputs
+OUTPUT_DIR=output
 
 export ver=v1 && \
     go test -run '^$' -bench '^BenchmarkSum$' -benchtime 10s -count 6 \

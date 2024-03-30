@@ -19,9 +19,9 @@ export ver=v1 && \
     go test -run '^$' -bench '^BenchmarkSum$' -benchtime 10s -count 6 \
         -cpu 4 \
         -benchmem \
-        -memprofile=${ver}.mem.pprof \
-        -cpuprofile=${ver}.cpu.pprof \
-    | tee ${ver}.txt
+        -memprofile=output/${ver}.mem.pprof \
+        -cpuprofile=output/${ver}.cpu.pprof \
+    | tee output/${ver}.txt
 */
 func BenchmarkSum(b *testing.B) {
 	fn := lazyCreateTestInput(b, 2e6)
