@@ -3,13 +3,13 @@ package sum
 import (
 	"testing"
 
-	"github.com/efficientgo/core/testutil"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestSum(t *testing.T) {
 	ret, err := Sum("testdata/input.txt")
-	testutil.Ok(t, err)
-	testutil.Equals(t, 3110800, ret)
+	assert.NoError(t, err)
+	assert.Equal(t, int64(3110800), ret)
 }
 
 func BenchmarkSum(b *testing.B) {
