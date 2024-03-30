@@ -20,6 +20,7 @@ func BenchmarkSum(b *testing.B) {
 	// 初期化処理の時間をベンチマークに含めたくない場合はタイマーをリセット
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_, _ = Sum("testdata/test.2M.txt")
+		_, err := Sum("testdata/test.2M.txt")
+		assert.NoError(b, err)
 	}
 }
