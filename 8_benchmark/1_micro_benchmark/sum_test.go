@@ -24,14 +24,29 @@ export ver=v1 && \
     | tee output/${ver}.txt
 */
 func BenchmarkSum(b *testing.B) {
-	fn := lazyCreateTestInput(b, 2e6)
+	for _, tcase := range []struct {
+		numLines int
+	}{
+		{numLines: 0},
+		{numLines: 1e2},
+		{numLines: 1e4},
+		{numLines: 1e6},
+		{numLines: 2e6},
+	} {
+		b.Run(fmt.Sprintf("lines-%d", tcase.numLines), func(b *testing.B) {
+			b.ReportAllocs()
 
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		_, err := Sum(fn)
-		assert.NoError(b, err)
+			fn := lazyCreateTestInput(b, tcase.numLines)
+
+			b.ResetTimer()
+			for i := 0; i < b.N; i++ {
+				_, err := Sum(fn)
+				assert.NoError(b, err)
+			}
+		})
 	}
 }
+
 func TestBenchSum(t *testing.T) {
 	fn := filepath.Join(t.TempDir(), "/test.2M.txt")
 	sum, err := createTestInput(fn, 2e6)
