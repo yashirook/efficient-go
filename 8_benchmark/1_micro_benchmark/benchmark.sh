@@ -1,9 +1,12 @@
 #!/bin/bash
 set -e
 
-export ver=1 && \
+OUTPUT_DIR=benchmark_outputs
+
+export ver=v1 && \
     go test -run '^$' -bench '^BenchmarkSum$' -benchtime 10s -count 6 \
         -cpu 4 \
         -benchmem \
-        -memprofile=${ver}.mem.pprof -cpuprofile=${ver}.cpu.pprof \
-    | tee ${ver}.txt
+        -memprofile=$OUTPUT_DIR/${ver}.mem.pprof \
+        -cpuprofile=$OUTPUT_DIR/${ver}.cpu.pprof \
+    | tee $OUTPUT_DIR/${ver}.txt
