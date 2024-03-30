@@ -35,6 +35,7 @@ func benchmarkSum(tb testutil.TB) {
 	sum, err := createTestInput(fn, 2e6)
 	assert.NoError(tb, err)
 
+	tb.ResetTimer()
 	for i := 0; i < tb.N(); i++ {
 		ret, err := Sum(fn)
 		assert.NoError(tb, err)
